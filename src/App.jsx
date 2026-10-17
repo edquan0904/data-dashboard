@@ -1,14 +1,17 @@
 import { useState, useEffect } from "react";
 import StateInfo from "./Components/StateInfo";
-import "./App.css"
+import "./App.css";
+
+const SMALL_MAX = 2000000;
+const MEDIUM_MAX = 8000000;
 
 const getPopulation = (state) =>
   parseInt(state.population.replaceAll(",", ""));
 
 const getSize = (state) => {
   const pop = getPopulation(state);
-  if (pop < 2000000) return "small";
-  if (pop < 8000000) return "medium";
+  if (pop < SMALL_MAX) return "small";
+  if (pop < MEDIUM_MAX) return "medium";
   return "large";
 };
 
@@ -80,18 +83,23 @@ function App() {
           placeholder="Search by state name..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          aria-label="Search by state name"
         />
 
-        <select value={sizeFilter} onChange={(e) => setSizeFilter(e.target.value)}>
+        <select 
+          value={sizeFilter} 
+          onChange={(e) => setSizeFilter(e.target.value)}
+          aria-label="Filter states by population size"
+        >
           <option value="all">All sizes</option>
-          <option value="small">Small</option>
-          <option value="medium">Medium</option>
-          <option value="large">Large</option>
+          <option value="small">Small (under {SMALL_MAX / 1000000}M)</option>
+          <option value="medium">Medium ({SMALL_MAX / 1000000}M to {MEDIUM_MAX / 1000000}M)</option>
+          <option value="large">Large (over {MEDIUM_MAX / 1000000}M)</option>
         </select>
       </div>
 
       {states.length > 0 && totalShown === 0 && (
-        <p>No states match your search.</p>
+        <p className="no-match">No states match your search.</p>
       )}
 
       {filteredStates.map((state) => (

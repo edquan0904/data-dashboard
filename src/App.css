@@ -39,6 +39,10 @@ h1 {
   margin-bottom: 1.5rem;
 }
 
+.controls input {
+  flex: 1;
+}
+
 .controls input,
 .controls select {
   padding: 0.5rem 0.75rem;
@@ -64,6 +68,7 @@ h1 {
   object-fit: contain;
   border-radius: 2px;
   border: 1px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
 }
 
 .state-name {
@@ -104,4 +109,8 @@ h1 {
   }
 }
 
-
+.no-match {
+  padding: 1.5rem;
+  text-align: center;
+  color: #94a3b8;
+}
