@@ -4,6 +4,7 @@ import "./App.css";
 
 const SMALL_MAX = 2000000;
 const MEDIUM_MAX = 8000000;
+const SLIDER_MAX = 40000000;
 
 const getPopulation = (state) =>
   parseInt(state.population.replaceAll(",", ""));
@@ -122,6 +123,21 @@ function App() {
           }}
           aria-label="Maximum population"
         />
+
+        <div className="slider-group">
+          <label htmlFor="max-slider">
+            Max: {maxPop === "" ? "No limit" : Number(maxPop).toLocaleString()}
+          </label>
+          <input
+            id="max-slider"
+            type="range"
+            min={0}
+            max={SLIDER_MAX}
+            step={500000}
+            value={maxPop === "" ? SLIDER_MAX : maxPop}
+            onChange={(e) => setMaxPop(Number(e.target.value) === SLIDER_MAX ? "" : e.target.value)}
+          />
+        </div>
 
         <select 
           value={sizeFilter} 
