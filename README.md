@@ -44,7 +44,7 @@ The following **optional** features are implemented:
 The following **additional** features are implemented:
 
 * [x] Reset Filters button that clears every search and filter at once
-* [x] Population and year sliders stay in sync with their number boxes by sharing the same state; the far right of each slider means "no limit"
+* [x] Population and year sliders stay in sync with their max number boxes by sharing the same state; the far right of each slider means "no limit"
 * [x] Specific messages when nothing matches, including when a minimum is greater than a maximum
 * [x] Error handling for failed network requests and bad server responses
 * [x] Accessible labels on all inputs, and visible keyboard focus styles
@@ -63,11 +63,11 @@ GIF created with Kap
 
 Challenges encountered while building the app:
 
-- **CORS error with the NHL API.** I first planned a dashboard with NHL standings, but the browser blocked the requests because the NHL server doesn't send the header that allows browser pages to read its data. Since this was for a class project, I switched to a US states API that doesn't have that problem and kept the same fetch code.
+- **CORS error with my first API choice.** My first API request was blocked by the browser, because that API's server doesn't send the header that allows browser pages to read its data. I switched to a US states API that doesn't have that problem and kept the same fetch code.
 - **Population was stored as text with commas** (for example `"5,108,468"`), so I wrote a helper that removes every comma and converts it to a number. My first version only removed the first comma, which put some states in the wrong size group.
 - **Using `reduce` safely.** The average needs a starting value of `0`, and the largest and smallest states needed a guard so the page doesn't crash when a search matches no states.
 - **Admission dates were text** (for example `"December 14, 1819"`), and two entries had a trailing space, so I trimmed the text before pulling out the year.
-- **Keeping inputs in sync.** Each slider shares its state with its number box, so dragging one updates the other and the reset button clears both.
+- **Keeping inputs in sync.** Each slider shares its state with its max number box, so dragging one updates the other and the reset button clears both.
 
 ## License
 
