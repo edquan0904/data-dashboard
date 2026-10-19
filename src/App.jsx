@@ -71,6 +71,16 @@ function App() {
       )
     : null;
 
+  const handleReset = () => {
+    setSearch("");
+    setMinPop("");
+    setMaxPop("");
+    setSizeFilter("all");
+  };
+
+  const isMinGreaterThanMax =
+    minPop !== "" && maxPop !== "" && Number(minPop) > Number(maxPop);
+
   return (
     <div className="whole-page">
       <h1>US States Dashboard</h1>
@@ -96,15 +106,20 @@ function App() {
           min={0}
           placeholder="Min population"
           value={minPop}
-          onChange={(e) => setMinPop(e.target.value)}
+          onChange={(e) => {
+            if (!e.target.value.includes("-")) setMinPop(e.target.value);
+          }}
           aria-label="Minimum population"
         />
 
         <input
           type="number"
+          min={0}
           placeholder="Max population"
           value={maxPop}
-          onChange={(e) => setMaxPop(e.target.value)}
+          onChange={(e) => {
+            if (!e.target.value.includes("-")) setMaxPop(e.target.value);
+          }}
           aria-label="Maximum population"
         />
 
@@ -118,10 +133,18 @@ function App() {
           <option value="medium">Medium ({SMALL_MAX / 1000000}M to {MEDIUM_MAX / 1000000}M)</option>
           <option value="large">Large (over {MEDIUM_MAX / 1000000}M)</option>
         </select>
+
+        <button onClick={handleReset} className="reset-btn">
+          Reset Filters
+        </button>
       </div>
 
       {states.length > 0 && totalShown === 0 && (
-        <p className="no-match">No states match your search.</p>
+        <p className="no-match">
+          {isMinGreaterThanMax
+            ? "Minimum population cannot be greater than maximum population."
+            : "No states match your search."}
+        </p>
       )}
 
       {filteredStates.map((state) => (

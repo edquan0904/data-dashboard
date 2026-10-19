@@ -37,20 +37,34 @@ h1 {
   display: flex;
   gap: 1rem;
   margin-bottom: 1.5rem;
+  flex-wrap: wrap;
 }
 
-.controls input {
+.controls input[type="text"] {
   flex: 1;
+  min-width: 200px;
+}
+
+.controls input[type="number"] {
+  width: 150px;
+  flex: 0 0 auto;
 }
 
 .controls input,
-.controls select {
+.controls select,
+.reset-btn {
   padding: 0.5rem 0.75rem;
   font-size: 1rem;
+  font-family: inherit;
   border-radius: 4px;
   border: 1px solid #28386c;
   background-color: #162247;
   color: #ffffff;
+}
+
+.reset-btn {
+  cursor: pointer;
+  transition: border-color 0.2s;
 }
 
 .row {
@@ -91,6 +105,13 @@ h1 {
 .controls input:focus,
 .controls select:focus,
 .controls select:hover {
+  border-color: #3b82f6;
+  outline: none;
+}
+
+.reset-btn:hover,
+.reset-btn:focus {
+  background-color: #1f2f5e;
   border-color: #3b82f6;
   outline: none;
 }
