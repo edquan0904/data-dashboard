@@ -5,6 +5,8 @@ import "./App.css";
 const SMALL_MAX = 2000000;
 const MEDIUM_MAX = 8000000;
 const SLIDER_MAX = 40000000;
+const YEAR_MIN = 1787;
+const YEAR_MAX = 1959;
 
 const getPopulation = (state) =>
   parseInt(state.population.replaceAll(",", ""));
@@ -16,12 +18,21 @@ const getSize = (state) => {
   return "large";
 };
 
+const getYear = (state) =>
+  parseInt(state.admitted_to_union.trim().slice(-4));
+
+const getCentury = (state) =>
+  Math.floor(getYear(state) / 100) * 100;
+
 function App() {
   const [states, setStates] = useState([]);
   const [search, setSearch] = useState("");
   const [sizeFilter, setSizeFilter] = useState("all");
   const [minPop, setMinPop] = useState("");
   const [maxPop, setMaxPop] = useState("");
+  const [centuryFilter, setCenturyFilter] = useState("all");
+  const [minYear, setMinYear] = useState("");
+  const [maxYear, setMaxYear] = useState("");
 
   useEffect(() => {
     const fetchStates = async () => {
@@ -48,7 +59,12 @@ function App() {
     const pop = getPopulation(state);
     const matchesMin = minPop === "" || pop >= Number(minPop);
     const matchesMax = maxPop === "" || pop <= Number(maxPop);
-    return matchesSearch && matchesSize && matchesMin && matchesMax;
+    const matchesCentury =
+      centuryFilter === "all" || getCentury(state) === Number(centuryFilter);
+    const matchesMinYear = minYear === "" || getYear(state) >= Number(minYear);
+    const matchesMaxYear = maxYear === "" || getYear(state) <= Number(maxYear);
+    
+    return matchesSearch && matchesSize && matchesMin && matchesMax && matchesCentury && matchesMinYear && matchesMaxYear;
   });
 
   const totalShown = filteredStates.length;
@@ -77,10 +93,16 @@ function App() {
     setMinPop("");
     setMaxPop("");
     setSizeFilter("all");
+    setCenturyFilter("all");
+    setMinYear("");
+    setMaxYear("");
   };
 
-  const isMinGreaterThanMax =
+  const isMinPopGreaterThanMax =
     minPop !== "" && maxPop !== "" && Number(minPop) > Number(maxPop);
+
+  const isMinYearGreaterThanMax =
+    minYear !== "" && maxYear !== "" && Number(minYear) > Number(maxYear);
 
   return (
     <div className="whole-page">
@@ -101,7 +123,12 @@ function App() {
           onChange={(e) => setSearch(e.target.value)}
           aria-label="Search by state name"
         />
+        <button onClick={handleReset} className="reset-btn">
+          Reset Filters
+        </button>
+      </div>
 
+      <div className="controls">
         <input
           type="number"
           min={0}
@@ -125,11 +152,11 @@ function App() {
         />
 
         <div className="slider-group">
-          <label htmlFor="max-slider">
-            Max: {maxPop === "" ? "No limit" : Number(maxPop).toLocaleString()}
+          <label htmlFor="pop-slider">
+            Max Pop: {maxPop === "" ? "No limit" : Number(maxPop).toLocaleString()}
           </label>
           <input
-            id="max-slider"
+            id="pop-slider"
             type="range"
             min={0}
             max={SLIDER_MAX}
@@ -139,7 +166,7 @@ function App() {
           />
         </div>
 
-        <select 
+        <select
           value={sizeFilter} 
           onChange={(e) => setSizeFilter(e.target.value)}
           aria-label="Filter states by population size"
@@ -149,17 +176,66 @@ function App() {
           <option value="medium">Medium ({SMALL_MAX / 1000000}M to {MEDIUM_MAX / 1000000}M)</option>
           <option value="large">Large (over {MEDIUM_MAX / 1000000}M)</option>
         </select>
-
-        <button onClick={handleReset} className="reset-btn">
-          Reset Filters
-        </button>
       </div>
 
+      <div className="controls">
+        <input
+          type="number"
+          min={0}
+          placeholder="Min year"
+          value={minYear}
+          onChange={(e) => {
+            if (!e.target.value.includes("-")) setMinYear(e.target.value);
+          }}
+          aria-label="Minimum admission year"
+        />
+
+        <input
+          type="number"
+          min={0}
+          placeholder="Max year"
+          value={maxYear}
+          onChange={(e) => {
+            if (!e.target.value.includes("-")) setMaxYear(e.target.value);
+          }}
+          aria-label="Maximum admission year"
+        />
+
+        <div className="slider-group">
+          <label htmlFor="year-slider">
+            Admitted by: {maxYear === "" ? "Any year" : maxYear}
+          </label>
+          <input
+            id="year-slider"
+            type="range"
+            min={YEAR_MIN}
+            max={YEAR_MAX}
+            step={1}
+            value={maxYear === "" ? YEAR_MAX : maxYear}
+            onChange={(e) => setMaxYear(Number(e.target.value) === YEAR_MAX ? "" : e.target.value)}
+          />
+        </div>
+
+        <select
+          value={centuryFilter}
+          onChange={(e) => setCenturyFilter(e.target.value)}
+          aria-label="Filter states by century admitted"
+        >
+          <option value="all">All centuries</option>
+          <option value="1700">1700s</option>
+          <option value="1800">1800s</option>
+          <option value="1900">1900s</option>
+        </select>
+      </div>
+      
       {states.length > 0 && totalShown === 0 && (
         <p className="no-match">
-          {isMinGreaterThanMax
+          {isMinPopGreaterThanMax
             ? "Minimum population cannot be greater than maximum population."
-            : "No states match your search."}
+            : isMinYearGreaterThanMax
+            ? "Minimum year cannot be greater than maximum year."
+            : "No states match your search."
+            }
         </p>
       )}
 
@@ -169,6 +245,7 @@ function App() {
           flag={state.flag}
           name={state.name}
           capital={state.capital}
+          year={getYear(state)}
           population={getPopulation(state).toLocaleString()}
         />
       ))}

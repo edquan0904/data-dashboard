@@ -21,22 +21,26 @@ h1 {
 
 .stats {
   display: flex;
+  flex-wrap: nowrap;
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
 .stats p {
   flex: 1;
-  padding: 1.25rem;
+  padding: 1.1rem 0.4rem;
   border: 1px solid #28386c;
   border-radius: 8px;
   background-color: #162247;
   margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  text-align: center;
 }
 
 .controls {
   display: flex;
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   flex-wrap: wrap;
 }
 
@@ -46,7 +50,7 @@ h1 {
 }
 
 .controls input[type="number"] {
-  width: 150px;
+  width: 170px;
   flex: 0 0 auto;
 }
 
@@ -54,8 +58,7 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  min-width: 200px;
-  flex: 0 0 auto;
+  flex: 0 0 300px;
 }
 
 .controls input[type="range"] {
@@ -84,9 +87,15 @@ h1 {
   color: #ffffff;
 }
 
+.controls select {
+  flex: 1;
+  min-width: 160px;
+}
+
 .reset-btn {
   cursor: pointer;
   transition: border-color 0.2s;
+  margin-left: auto;
 }
 
 .row {
@@ -109,13 +118,23 @@ h1 {
 
 .state-name {
   flex: 1;
+  min-width: 120px;
 }
 
 .state-capital {
-  width: 150px;
+  flex: 1;
+  color: #94a3b8;
+}
+
+.state-year {
+  width: 60px;
+  flex-shrink: 0;
+  text-align: center;
+  color: #94a3b8;
 }
 
 .state-population {
+  flex: 1;
   min-width: 100px;
   text-align: right;
 }
