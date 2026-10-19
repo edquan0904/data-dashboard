@@ -19,6 +19,8 @@ function App() {
   const [states, setStates] = useState([]);
   const [search, setSearch] = useState("");
   const [sizeFilter, setSizeFilter] = useState("all");
+  const [minPop, setMinPop] = useState("");
+  const [maxPop, setMaxPop] = useState("");
 
   useEffect(() => {
     const fetchStates = async () => {
@@ -42,7 +44,10 @@ function App() {
   const filteredStates = states.filter((state) => {
     const matchesSearch = state.name.toLowerCase().includes(search.toLowerCase());
     const matchesSize = sizeFilter === "all" || getSize(state) === sizeFilter;
-    return matchesSearch && matchesSize;
+    const pop = getPopulation(state);
+    const matchesMin = minPop === "" || pop >= Number(minPop);
+    const matchesMax = maxPop === "" || pop <= Number(maxPop);
+    return matchesSearch && matchesSize && matchesMin && matchesMax;
   });
 
   const totalShown = filteredStates.length;
@@ -84,6 +89,23 @@ function App() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           aria-label="Search by state name"
+        />
+
+        <input
+          type="number"
+          min={0}
+          placeholder="Min population"
+          value={minPop}
+          onChange={(e) => setMinPop(e.target.value)}
+          aria-label="Minimum population"
+        />
+
+        <input
+          type="number"
+          placeholder="Max population"
+          value={maxPop}
+          onChange={(e) => setMaxPop(e.target.value)}
+          aria-label="Maximum population"
         />
 
         <select 
